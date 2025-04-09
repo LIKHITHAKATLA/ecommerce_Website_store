@@ -20,7 +20,7 @@ def add_product(request):
         form = ProductForm(request.POST,request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request,"Product added susscesfully")
+            # messages.success(request,"Product added susscesfully")
             return redirect('add_product')
         else:
             messages.info(request,"Product is not added,Try again")
@@ -53,18 +53,18 @@ def add_to_cart(request, pk):
         if order.items.filter(product__pk=pk).exists():
             order_item.quantity += 1
             order_item.save()
-            messages.info(request, "Added Quantity Item")
+            # messages.info(request, "Added Quantity Item")
             return redirect("productdesc", pk=pk)
         else:
             order.items.add(order_item)
-            messages.info(request, "Item added to Cart")
+            # messages.info(request, "Item added to Cart")
             return redirect("productdesc", pk=pk)
 
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
-        messages.info(request, "Item added to Cart")
+        # messages.info(request, "Item added to Cart")
         return redirect("productdesc", pk=pk)
 
 
@@ -88,7 +88,7 @@ def remove_item(request, pk):
             else:
                 order_item.delete()
             
-            messages.info(request, "Item quantity updated")
+            # messages.info(request, "Item quantity updated")
         else:
             messages.info(request, "This item is not in your cart")
         
@@ -129,16 +129,16 @@ def add_item(request, pk):
             if order_item.quantity < product.product_available_count:
                 order_item.quantity += 1
                 order_item.save()
-                messages.info(request, "Increased item quantity")
+                # messages.info(request, "Increased item quantity")
             else:
                 messages.info(request, "Sorry! Product is out of stock")
         else:
             order.items.add(order_item)
-            messages.info(request, "Item added to cart")
+            # messages.info(request, "Item added to cart")
     else:
         order = Order.objects.create(user=request.user)
         Order.items.add(order_item)
-        messages.info(request, "Item added to cart")
+        # messages.info(request, "Item added to cart")
     
     return redirect('order_list')  
 
@@ -146,7 +146,7 @@ def checkout_page(request):
     if CheckoutAddress.objects.filter(user=request.user).exists():
         return render(request, "core/checkout_address.html", {"payment_allow": "allow"})
     if request.method == "POST":
-        print("Saving must start")
+        # print("Saving must start")
         form = CheckoutForm(request.POST)
         if form.is_valid():
             street_address = form.cleaned_data.get("street_address")
@@ -162,7 +162,7 @@ def checkout_page(request):
                 zip_code=zip_code,
             )
             checkout_address.save()
-            print("It should render the summary page")
+            # print("It should render the summary page")
             return render(
                 request, "core/checkout_address.html", {"payment_allow": "allow"}
             )
@@ -179,7 +179,7 @@ def payment(request):
         # amount = get_final_price(Order)
         return render(request, 'core/payment.html')
     else:
-        messages.error(request, "No items in your cart!")
+        # messages.error(request, "No items in your cart!")
         return redirect('order_list')
     
 
@@ -197,7 +197,7 @@ def payment(request):
     order = Order.objects.filter(user=request.user, ordered=False).first()
     
     if not order:
-        messages.error(request, "No items in your cart!")
+        # messages.error(request, "No items in your cart!")
         return redirect('order_list')
 
     # Calculate the total price
@@ -211,7 +211,7 @@ def confirm_order_cod(request):
     order = Order.objects.filter(user=request.user, ordered=False).first()
     
     if not order:
-        messages.error(request, "No items in your cart!")
+        # messages.error(request, "No items in your cart!")
         return redirect('order_list')
     
     # Update the order status and payment method
@@ -254,15 +254,15 @@ def add_to_cart(request, pk):
         if order.items.filter(product__pk=pk).exists():
             order_item.quantity += 1
             order_item.save()
-            messages.info(request, "Added Quantity Item")
+            # messages.info(request, "Added Quantity Item")
         else:
             order.items.add(order_item)
-            messages.info(request, "Item added to Cart")
+            # messages.info(request, "Item added to Cart")
     else:
         ordered_date = timezone.now()
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.items.add(order_item)
-        messages.info(request, "Item added to Cart")
+        # messages.info(request, "Item added to Cart")
 
     return redirect("productdesc", pk=pk)
 
