@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="{% static 'img/logo.png' %}" rel="icon">
+  <link href="{% static 'img/logo.png' %}" rel="apple-touch-icon">
+
+  <title>Checkout Address Page</title>
+  <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <style>
+    /* Fonts and Reset */
+body {
+  font-family: 'Karla', sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Login Section Styling */
+.login-section-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 50px;
+  background-color: #ffffff;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  min-height: 100vh;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #343a40;
+}
+
+/* Form Styling */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form select,
+form textarea {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  font-size: 16px;
+  background-color: #f1f1f1;
+}
+
+/* Buttons */
+.login-btn,
+.btn-outline-success {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+.btn-outline-success:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Right Image Section */
+.login-img {
+  height: 100vh;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .login-section-wrapper {
+    padding: 20px;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6 login-section-wrapper">
+          <div class="login-wrapper my-auto">
+            {% if payment_allow == "allow" %}
+              <h1 class="login-title">Choose Your Payment Method</h1>
+              <div class="mt-4">
+                <!-- COD Option -->
+                <form method="post" action="{% url 'confirm_order_cod' %}">
+                  {% csrf_token %}
+                  <button class="btn btn-block btn-outline-success mb-3">Place Order (Cash on Delivery)</button>
+                </form>
+                
+              </div>
+            {% else %}
+              <h1 class="login-title">Checkout Address</h1>
+              
+              <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <br>
+                <input name="checkout" id="checkout" class="btn btn-block login-btn" type="submit" value="Checkout">
+              </form>
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-sm-6 px-0 d-none d-sm-block">
+          <img src="{% static 'img/store.jpeg' %}" alt="login image" class="login-img">
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
