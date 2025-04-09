@@ -255,14 +255,28 @@
 <!-- <body> -->
   <div class="product-card">
     <img src="{{ product.img.url|default:'/static/img/placeholder.png' }}" alt="Image" class="card-image">
-    <div class="product-details">
+    <!-- <div class="product-details">
         <h1 class="card-title">{{ product.name }}</h1><br>
         <p>{{product.desc}}</p><br>
         <p class="card-category"><strong>Category:</strong> {{ product.category.category_name }}</p><br>
         <p class="card-price"><strong>Price:</strong> RS.{{ product.price }}</p>
       <br>
       <a href="{% url 'add_to_cart' product.pk %}" class="add-to-cart">Add to Cart</a>
-    </div>
+    </div> -->
+    <div class="product-details">
+      <h1 class="card-title">{{ product.name }}</h1><br>
+      <p>{{ product.desc }}</p><br>
+      <p class="card-category"><strong>Category:</strong> {{ product.category.category_name }}</p><br>
+      <p class="card-price"><strong>Price:</strong> RS.{{ product.price }}</p>
+      <br>
+      {% if user.is_authenticated %}
+        <a href="{% url 'add_to_cart' product.pk %}" class="add-to-cart">Add to Cart</a>
+      {% else %}
+        <a href="{% url 'user_login' %}?next={% url 'add_to_cart' product.pk %}" class="add-to-cart">
+          Please login to add to cart
+        </a>
+      {% endif %}
+  </div>
   </div>
 </body>
 

@@ -231,3 +231,40 @@ from django.shortcuts import render
 
 def order_success(request):
     return render(request, 'core/order_success.html')
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.utils import timezone
+from .models import Product, Order, OrderItem
+
+@login_required(login_url='login')
+def add_to_cart(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+
+    order_item, created = OrderItem.objects.get_or_create(
+        product=product,
+        user=request.user,
+        ordered=False,
+    )
+
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        if order.items.filter(product__pk=pk).exists():
+            order_item.quantity += 1
+            order_item.save()
+            messages.info(request, "Added Quantity Item")
+        else:
+            order.items.add(order_item)
+            messages.info(request, "Item added to Cart")
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(user=request.user, ordered_date=ordered_date)
+        order.items.add(order_item)
+        messages.info(request, "Item added to Cart")
+
+    return redirect("productdesc", pk=pk)
+
+
+
