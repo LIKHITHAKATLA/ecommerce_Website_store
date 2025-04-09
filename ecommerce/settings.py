@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-=-hf2rcwj%v7_c*ym6l_5+x7ye1reb2+x=06&=x1*o_i$&t2#3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = ['ecommerce-website-store-2.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['ecommerce-website-store-3.onrender.com', '127.0.0.1', 'localhost']
 
 # ALLOWED_HOSTS = ['ecommerce-website-store-2.onrender.com']
 
@@ -132,7 +132,7 @@ STATICFILES_DIRS = [
 STATICSTORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://ecommerce-website-store-4.onrender.com',
+    'https://ecommerce-website-store-3.onrender.com',
 ]
 
 # MEDIA_URL = '/media/'
