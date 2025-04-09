@@ -232,39 +232,35 @@ from django.shortcuts import render
 def order_success(request):
     return render(request, 'core/order_success.html')
 
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.utils import timezone
 from .models import Product, Order, OrderItem
 
-@login_required(login_url='login')
+@login_required(login_url='user_login')
 def add_to_cart(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
-    order_item, created = OrderItem.objects.get_or_create(
-        product=product,
+    # Get or create order (using correct field 'ordered')
+    order, created = Order.objects.get_or_create(
         user=request.user,
         ordered=False,
+        defaults={'ordered_date': timezone.now()}
     )
 
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.items.filter(product__pk=pk).exists():
-            order_item.quantity += 1
-            order_item.save()
-            # messages.info(request, "Added Quantity Item")
-        else:
-            order.items.add(order_item)
-            # messages.info(request, "Item added to Cart")
+    # Check for existing order items for same product
+    existing_items = OrderItem.objects.filter(product=product, order=order)
+
+    if existing_items.exists():
+        order_item = existing_items.first()
+        total_quantity = sum(item.quantity for item in existing_items)
+        order_item.quantity = total_quantity + 1
+        order_item.save()
+        existing_items.exclude(id=order_item.id).delete()
     else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(user=request.user, ordered_date=ordered_date)
-        order.items.add(order_item)
-        # messages.info(request, "Item added to Cart")
+        OrderItem.objects.create(product=product, order=order, quantity=1, user=request.user)
 
+    # messages.success(request, "Product added to cart.")
     return redirect("productdesc", pk=pk)
-
-
-
